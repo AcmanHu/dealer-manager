@@ -1,0 +1,101 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "销售管理系统-首页"
+			}
+		}, {
+			"path": "pages/register/register",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "注册"
+			}
+		}, {
+			"path": "pages/sale/sale",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "销售"
+			}
+		}, {
+			"path": "pages/stockGood/stockGood",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "进货"
+			}
+		}, {
+			"path": "pages/inventory/inventory",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "库存管理"
+			}
+		}, {
+			"path": "pages/shopData/shopData",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "店铺数据"
+			}
+		}, {
+			"path": "pages/search/search",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "搜索"
+			}
+		}, {
+			"path": "pages/my/my",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "我的"
+			}
+		}, {
+			"path": "pages/dataDetail/dataDetail",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "详情"
+			}
+		}, {
+			"path": "pages/shopRegister/shopRegister",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "店铺注册"
+			}
+		}, {
+			"path": "pages/settlement/settlement",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "月结"
+			}
+		}, {
+			"path": "pages/saleRecord/saleRecord",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "销售记录"
+			}
+		}, {
+			"path": "pages/registerSuccess/registerSuccess",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "注册成功"
+			}
+		}, {
+			"path": "pages/plan/plan",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "统计分析"
+			}
+		}, {
+			"path": "pages/myRegister/myRegister",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "经销商注册"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	}
+}
