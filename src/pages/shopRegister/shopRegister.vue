@@ -1,6 +1,78 @@
 <template>
 	<view class="content">
 		<scroll-view class="m-info_box" scroll-y="true">
+			<view class="title_box m-container"><text class="m_tag">登录信息</text></view>
+			<view class="input-box m-container">
+				<view class="input-item">
+					<view class="input-label">用户名</view>
+					<view class="input-body">
+						<pb-input v-model="username" type="text" placeholder="用户名"></pb-input>
+						<!-- <input v-model="username" @blur="blur_input" type="text" confirm-type="next" style="margin-right: 160upx;"
+						 placeholder="" class="input"> -->
+					</view>
+				</view>
+				<view class="input-item">
+					<view class="input-label">密码</view>
+					<view class="input-body">
+						<pb-input v-model="password" type="text" placeholder="密码" :inClear="1" @setInput="getChangeInput($event,'pass')"></pb-input>
+						<!-- <input v-model="password" @blur="password_blur_input" @focus="passwordFocus" type="text" style="margin-right: 160upx;"
+						 placeholder="" class="input" :class="[passFocus?'password_input_c':'password_input']"> -->
+					</view>
+				</view>
+			</view>
+
+			<view class="m-flex-space-b title_box m-container title_box_top">
+				<text class="m_tag">店铺信息</text>
+			</view>
+			<!-- 店铺名称 -->
+			<view class="input-box m-container">
+				<view class="input-item">
+					<view class="input-label">店铺名称</view>
+					<view class="input-body">
+						<pb-input v-model="shopName" type="text" placeholder="请输入店铺名称"></pb-input>
+						<!-- <input v-model="shopName" @blur="blur_input" type="text" confirm-type="next" style="margin-right: 160upx;"
+						 placeholder="请输入店铺名称" class="input"> -->
+					</view>
+				</view>
+				<!-- 联系人 -->
+				<view class="input-item">
+					<view class="input-label">联系人</view>
+					<view class="input-body">
+						<pb-input v-model="contact" type="text" placeholder="请输入联系人"></pb-input>
+						<!-- <input v-model="contact" @blur="blur_input" type="text" confirm-type="next" style="margin-right: 160upx;"
+						 placeholder="请输入联系人" class="input"> -->
+					</view>
+				</view>
+				<!-- 手机号码 -->
+				<view class="input-item">
+					<view class="input-label">手机号</view>
+					<view class="input-body">
+						<!-- <input v-model="phone" @blur="blur_input" @input="phoneInput" maxlength="11" type="number" :focus="phoneFocus"
+						 style="margin-right: 160upx;" placeholder="请输入手机号" class="input"> -->
+						<pb-input v-model="phone" type="number" maxlength="11" @input="phoneInput" placeholder="请输入手机号"></pb-input>
+						<button :disabled="!isCanSendCode" class="btn-code" @click="sendCode">{{sendMsg}}</button>
+					</view>
+				</view>
+				<!-- 验证码 -->
+				<!-- <view class="input-item" v-show="showCode"> -->
+				<view class="input-item">
+					<view class="input-label">验证码</view>
+					<view class="input-body">
+						<!-- <input placeholder="请输入验证码" @blur="blur_input" type="number" v-model="code" maxlength="6" class="input"> -->
+						<pb-input v-model="code" type="number" maxlength="6" placeholder="请输入验证码"></pb-input>
+						<!-- <button :disabled="!isCanSendCode" class="btn-code" @click="sendCode">{{sendMsg}}</button> -->
+					</view>
+				</view>
+				<!-- 详细地址 -->
+				<view class="input-item">
+					<view class="input-label">详细地址</view>
+					<view class="input-body">
+						<!-- <input v-model="addressDetail" @blur="blur_input" type="text" confirm-type="next" style="margin-right: 160upx;"
+						 placeholder="请输入详细地址" class="input"> -->
+						<pb-input v-model="addressDetail" type="text" placeholder="请输入详细地址"></pb-input>
+					</view>
+				</view>
+			</view>
 			<view class="title_box m-container"><text class="m_tag">产品信息</text></view>
 			<view class="input-box m-container">
 				<!-- 代理商名称 -->
@@ -19,73 +91,6 @@
 					</view>
 				</view>
 			</view>
-			<view class="m-flex-space-b title_box m-container title_box_top">
-				<text class="m_tag">店铺信息</text>
-			</view>
-			<!-- 店铺名称 -->
-			<view class="input-box m-container">
-				<view class="input-item">
-					<view class="input-label">店铺名称</view>
-					<view class="input-body">
-						<input v-model="shopName" @blur="blur_input" type="text" confirm-type="next" style="margin-right: 160upx;"
-						 placeholder="请输入店铺名称" class="input">
-					</view>
-				</view>
-				<!-- 联系人 -->
-				<view class="input-item">
-					<view class="input-label">联系人</view>
-					<view class="input-body">
-						<input v-model="contact" @blur="blur_input" type="text" confirm-type="next" style="margin-right: 160upx;"
-						 placeholder="请输入联系人" class="input">
-					</view>
-				</view>
-				<!-- 手机号码 -->
-				<view class="input-item">
-					<view class="input-label">手机号</view>
-					<view class="input-body">
-						<!-- <input v-model="phone" maxlength="11" type="number" :focus="phoneFocus" @focus="focusPhone" @blur="blurPhone"
-						 style="margin-right: 160upx;" placeholder="请输入手机号" class="input"> -->
-						<!-- <button class="btn-code" @click="changePhone" v-if="phone !== ''">{{changeMsg}}</button> -->
-
-						<input v-model="phone" @blur="blur_input" @input="phoneInput" maxlength="11" type="number" :focus="phoneFocus"
-						 style="margin-right: 160upx;" placeholder="请输入手机号" class="input">
-						<button :disabled="!isCanSendCode" class="btn-code" @click="sendCode">{{sendMsg}}</button>
-					</view>
-				</view>
-				<!-- 验证码 -->
-				<!-- <view class="input-item" v-show="showCode"> -->
-				<view class="input-item">
-					<view class="input-label">验证码</view>
-					<view class="input-body">
-						<input placeholder="请输入验证码" @blur="blur_input" type="number" v-model="code" maxlength="6" class="input">
-						<!-- <button :disabled="!isCanSendCode" class="btn-code" @click="sendCode">{{sendMsg}}</button> -->
-					</view>
-				</view>
-				<!-- 详细地址 -->
-				<view class="input-item">
-					<view class="input-label">详细地址</view>
-					<view class="input-body">
-						<input v-model="addressDetail" @blur="blur_input" type="text" confirm-type="next" style="margin-right: 160upx;"
-						 placeholder="请输入详细地址" class="input">
-					</view>
-				</view>
-			</view>
-			<view class="title_box m-container"><text class="m_tag">登录信息</text></view>
-			<view class="input-box m-container">
-				<view class="input-item">
-					<view class="input-label">用户名</view>
-					<view class="input-body">
-						<input v-model="username" @blur="blur_input" type="text" confirm-type="next" style="margin-right: 160upx;"
-						 placeholder="" class="input">
-					</view>
-				</view>
-				<view class="input-item">
-					<view class="input-label">密码</view>
-					<view class="input-body">
-						<input v-model="password" @blur="blur_input" type="text" style="margin-right: 160upx;" placeholder="" class="input">
-					</view>
-				</view>
-			</view>
 		</scroll-view>
 
 		<view class="m-footer">
@@ -97,8 +102,11 @@
 
 <script>
 	let timer = '';
+	import pbInput from '@/components/pb-input.vue'
 	export default {
-		components: {},
+		components: {
+			pbInput
+		},
 		data() {
 			return {
 				// 用户openID
@@ -125,6 +133,8 @@
 				addressDetail: "",
 				username: "",
 				password: "888888",
+				// --------------------------------
+				passFocus: false
 			};
 		},
 		onLoad(option) {
@@ -132,17 +142,19 @@
 			this.specialId = option.id
 			this.userOpenID = option.openID
 			console.log("参数", option);
+			this.getMsg()
 		},
 		onShow() {
-			this.getMsg()
 			// console.log(this.specialId)
 		},
 		methods: {
-			blur_input() {
-				uni.pageScrollTo({
-					scrollTop: 0,
-					duration: 0
-				});
+			getChangeInput(e, str) {
+				console.log(e, str);
+				if (str === 'pass') {
+					this.password = e
+				} else if (str === 'price') {
+					this.price = e
+				}
 			},
 			// 验证码
 			setCodeInterval() {
@@ -522,8 +534,12 @@
 		height: 100%;
 	}
 
-	input {
-		line-height: 40upx;
+	.password_input {
+		color: #808080;
+	}
+
+	.password_input_c {
+		color: #000;
 	}
 
 	.content {
@@ -552,7 +568,7 @@
 		}
 
 		.title_box_top {
-			margin-top: 20upx;
+			// margin-top: 20upx;
 		}
 
 		.tips_info {

@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<scroll-view scroll-y="true" class="m_scroll">
-			<view class="title_box m-container"><text class="m_tag">产品信息</text></view>
+			<view class="title_box m-container-t"><text class="m_tag">产品信息</text></view>
 			<view class="input-box m-container">
 				<!-- 代理商名称 -->
 				<view class="input-item">
@@ -15,11 +15,14 @@
 					<view class="input-label">价格</view>
 					<view class="input-body">
 						<!-- <input v-model="price" type="text" style="margin-right: 160upx;" placeholder="请输入联系人" class="input"> -->
-						<text class="input m_placeholder">{{price===""?'':'￥'+price}}</text>
+						<!-- <text class="input m_placeholder">{{price===""?'':'￥'+price}}</text> -->
+						<!-- <pb-input v-model="price" type="number" placeholder=""></pb-input> -->
+						<pb-input v-model="price" type="number" placeholder=""  @setInput="getChangeInput($event,'price')"></pb-input>
 					</view>
 				</view>
 			</view>
-			<view class="m-flex-space-b title_box m-container title_box_top">
+
+			<view class="m-flex-space-b title_box m-container-t title_box_top">
 				<text class="m_tag">店铺信息</text>
 				<text class="m-color-goto" @click="showMoreInfo">{{lookMore.value}}</text>
 			</view>
@@ -36,23 +39,26 @@
 					<view class="input-item">
 						<view class="input-label">店铺名称</view>
 						<view class="input-body">
-							<input v-model="shopName" @blur="blur_input" type="text" style="margin-right: 160upx;" placeholder="请输入店铺名称"
-							 class="input">
+							<pb-input v-model="shopName" type="text" placeholder="请输入店铺名称"></pb-input>
+							<!-- <input v-model="shopName" @blur="blur_input" type="text" style="margin-right: 160upx;" placeholder="请输入店铺名称"
+							 class="input"> -->
 						</view>
 					</view>
 					<!-- 联系人 -->
 					<view class="input-item">
 						<view class="input-label">联系人</view>
 						<view class="input-body">
-							<input v-model="contact" @blur="blur_input" type="text" style="margin-right: 160upx;" placeholder="请输入联系人" class="input">
+							<pb-input v-model="contact" type="text" placeholder="请输入联系人"></pb-input>
+							<!-- <input v-model="contact" @blur="blur_input" type="text" style="margin-right: 160upx;" placeholder="请输入联系人" class="input"> -->
 						</view>
 					</view>
 					<!-- 手机号码 -->
 					<view class="input-item">
 						<view class="input-label">手机号</view>
 						<view class="input-body">
-							<input v-model="phone" @blur="blur_input" maxlength="11" type="number" style="margin-right: 160upx;" placeholder="请输入手机号"
-							 class="input">
+							<pb-input v-model="phone" type="number" maxlength="11" placeholder="请输入手机号"></pb-input>
+							<!-- <input v-model="phone" @blur="blur_input" maxlength="11" type="number" style="margin-right: 160upx;" placeholder="请输入手机号"
+							 class="input"> -->
 							<!-- <button :disabled="!isCanSendCode" class="btn-code" @click="sendCode">{{sendMsg}}</button> -->
 						</view>
 					</view>
@@ -67,28 +73,33 @@
 					<view class="input-item">
 						<view class="input-label">详细地址</view>
 						<view class="input-body">
-							<input v-model="addressDetail" @blur="blur_input" type="text" style="margin-right: 160upx;" placeholder="请输入详细地址"
-							 class="input">
+							<pb-input v-model="addressDetail" type="text" placeholder="请输入详细地址"></pb-input>
+							<!-- <input v-model="addressDetail" @blur="blur_input" type="text" style="margin-right: 160upx;" placeholder="请输入详细地址"
+							 class="input"> -->
 						</view>
 					</view>
 				</view>
-				<view class="title_box m-container"><text class="m_tag">登录信息</text></view>
+				<view class="title_box m-container-t"><text class="m_tag">登录信息</text></view>
 				<view class="input-box m-container">
 					<view class="input-item">
 						<view class="input-label">用户名</view>
 						<view class="input-body">
-							<input v-model="username" @blur="blur_input" type="text" style="margin-right: 160upx;" placeholder="用户名" class="input">
+							<pb-input v-model="username" type="text" placeholder="用户名"></pb-input>
+							<!-- <input v-model="username" @blur="blur_input" type="text" style="margin-right: 160upx;" placeholder="用户名" class="input"> -->
 						</view>
 					</view>
 					<view class="input-item">
 						<view class="input-label">密码</view>
 						<view class="input-body">
-							<input v-model="password" @blur="blur_input" type="text" style="margin-right: 160upx;" placeholder="密码" class="input">
+							<pb-input v-model="password" type="text" placeholder="密码" :inClear="1" @setInput="getChangeInput($event,'pass')"></pb-input>
+							<!-- <input v-model="password" @blur="password_blur_input" @focus="passwordFocus" type="text" style="margin-right: 160upx;"
+							 placeholder="密码" class="input" :class="[passFocus?'password_input_c':'password_input']"> -->
 						</view>
 					</view>
 				</view>
 			</template>
-			<view class="title_box m-container"><text class="m_tag">店铺注册支付二维码和链接</text></view>
+
+			<view class="title_box m-container-t"><text class="m_tag">店铺注册支付二维码和链接</text></view>
 			<view class="input-box m-container">
 				<view class="pay-ways-box title_box_top">
 					<radio-group @change="radioChange" class="m-flex-space-b radio_box">
@@ -118,9 +129,11 @@
 <script>
 	let timer = '';
 	import tkiQrcode from '@/components/tki-qrcode/tki-qrcode.vue'
+	import pbInput from '@/components/pb-input.vue'
 	export default {
 		components: {
-			tkiQrcode
+			tkiQrcode,
+			pbInput
 		},
 		data() {
 			return {
@@ -131,14 +144,14 @@
 				isCanSendCode: true,
 				// ---------表单数据------------
 				product: "请选择产品",
-				price: 0,
+				price: '0',
 				shopName: "",
 				contact: "",
 				phone: "",
 				code: "",
 				addressDetail: "",
 				username: "",
-				password: "",
+				password: "888888",
 				// ---------------------
 				lookMore: {
 					status: true,
@@ -163,6 +176,8 @@
 						name: '先试用'
 					}
 				],
+				// 
+				passFocus: false,
 				// 默认选中
 				current: 0,
 				// -----二维码配置-----
@@ -187,19 +202,13 @@
 			// console.log(">>>", this.$store.state.dealerMsg);
 		},
 		methods: {
-			openPopup() {
-				// this.$refs.popup.open()
-				this.showPopup = true
-			},
-			closePopup() {
-
-				this.showPopup = false
-			},
-			blur_input() {
-				uni.pageScrollTo({
-					scrollTop: 0,
-					duration: 0
-				});
+			// 获取输入框传入的值
+			getChangeInput(e, str) {
+				if (str === 'pass') {
+					this.password = e
+				} else if (str === 'price') {
+					this.price = e
+				}
 			},
 			change(e) {
 				console.log(e);
@@ -220,7 +229,7 @@
 				if (oIndex.status === 1) {
 					this.pickerIndex = e.index[0]
 					this.product = e.label
-					this.price = this.pickerValueArray[e.index[0]].salePrice
+					this.price = "" + this.pickerValueArray[e.index[0]].salePrice
 				} else {
 					uni.showToast({
 						icon: 'none',
@@ -349,7 +358,7 @@
 					if (this.$Toast.checkNone(sign, '产品不能为空')) {
 						return;
 					}
-					data.Price = this.price
+					data.Price = +this.price
 					data.ProductID = this.pickerValueArray[this.pickerIndex].productID
 					this.choosePayWays(data)
 				} else {
@@ -384,7 +393,7 @@
 						return;
 					}
 					data.ProductID = this.pickerValueArray[this.pickerIndex].productID
-					data.Price = this.price
+					data.Price = +this.price
 					data.vCode = this.code
 					data.OrgName = this.shopName
 					data.OrgContacts = this.contact
@@ -392,6 +401,7 @@
 					data.OrgAddress = this.addressDetail
 					data.OrgLoginName = this.username
 					data.OrgPassword = this.password
+					console.log(data);
 					this.choosePayWays(data)
 				}
 			},
@@ -487,10 +497,6 @@
 		height: 100%;
 	}
 
-	.content {
-		height: 100%;
-	}
-
 	.m_scroll {
 		height: calc(100% - 120upx)
 	}
@@ -499,7 +505,17 @@
 		padding: 20upx 0;
 	}
 
+	.password_input {
+		color: #808080;
+	}
+
+	.password_input_c {
+		color: #000;
+	}
+
 	.content {
+		height: 100%;
+
 		.title_box {
 			background: #fff;
 			// border-bottom: 2px dashed #99CCFF;
@@ -518,7 +534,7 @@
 		}
 
 		.title_box_top {
-			margin-top: 20upx;
+			// margin-top: 20upx;
 		}
 
 		.tips_info {

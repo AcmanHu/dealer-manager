@@ -9,6 +9,28 @@ import {
 	cityList
 } from "@/common/common.js"
 
+// const windowHeight = window.innerHeight
+// Vue.directive('fixedInput', function(el) {
+// 		console.log(el)
+// 	el.addEventListener('blur', function() {
+// 		console.log(123);
+// 		let windowFocusHeight = window.innerHeight
+// 		if (windowHeight == windowFocusHeight) {
+// 			return
+// 		}
+// 		console.log(windowHeight + '--' + windowFocusHeight);
+// 		console.log('修复');
+// 		let currentPosition;
+// 		let speed = 1; //页面滚动距离
+// 		currentPosition = document.documentElement.scrollTop || document.body.scrollTop;
+// 		currentPosition -= speed;
+// 		window.scrollTo(0, currentPosition); //页面向上滚动
+// 		currentPosition += speed; //speed变量
+// 		window.scrollTo(0, currentPosition); //页面向下滚动
+// 	})
+// })
+
+
 let publicUrl;
 // publicUrl = 'http://192.168.1.8:1006/'
 import mpvuePicker from 'mpvue-picker';

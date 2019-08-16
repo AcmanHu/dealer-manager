@@ -1,5 +1,5 @@
 <template>
-	<view class="register">
+	<view class="register" :style="'height:'+screenHeight+'px !important;'">
 		<view class="content">
 			<!-- 头部logo -->
 			<view class="header">
@@ -7,7 +7,7 @@
 			</view>
 			<!-- 主体 -->
 			<view class="main">
-				<wInput v-model="name" type="text" placeholder="代理商名称"></wInput>
+				<wInput v-model="name" type="text" placeholder="渠道名称"></wInput>
 				<wInput v-model="contact" type="text" placeholder="联系人"></wInput>
 				<wInput v-model="phone" type="number" maxlength="11" placeholder="手机号"></wInput>
 				<!-- 		<wInput v-model="passData" type="password" maxlength="11" placeholder="登录密码" isShowPass></wInput> -->
@@ -34,6 +34,7 @@
 	export default {
 		data() {
 			return {
+				screenHeight: '',
 				//logo图片 base64
 				logoImage: '../../static/img/jete_wem.png',
 				phoneData: '', // 用户/电话
@@ -53,6 +54,9 @@
 		components: {
 			wInput,
 			wButton,
+		},
+		onLoad() {
+			this.screenHeight = uni.getSystemInfoSync().windowHeight;
 		},
 		mounted() {
 			_this = this;
@@ -178,10 +182,13 @@
 
 	page {
 		height: 100%;
+		min-height: 100%;
 	}
 
 	.register {
+		width: 100%;
 		height: 100%;
+		min-height: 100%;
 		background-image: url('~@/static/bg.jpg');
 		background-repeat: no-repeat;
 		background-size: 100% 100%;

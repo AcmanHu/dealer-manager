@@ -88,7 +88,13 @@
 			"path": "pages/myRegister/myRegister",
 			"style": {
 				"navigationStyle": "custom",
-				"navigationBarTitleText": "经销商注册"
+				"navigationBarTitleText": "渠道注册"
+			}
+		}, {
+			"path": "pages/shareEWM/shareEWM",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "分享二维码"
 			}
 		}
 	],

@@ -4,19 +4,6 @@
 			<template v-if="stockData.length!==0">
 				<mySwiper :listData="stockData" @changeIndex="getSwiperKey"></mySwiper>
 			</template>
-			<!-- <view class="m-shadow_box m-flex-align shop_info">
-				<view class="head_img_box">
-					<image src="../../static/img/jete_ewm.png" mode=""></image>
-				</view>
-				<view class="m-dir-justify head_info_box">
-					<view><text class="info_name">5A单店版</text><text class="info_price">（￥1688.00）</text></view>
-					<view class="info_box">
-						剩余 <text class="info_num">12</text> 套 &nbsp;&nbsp;&nbsp;&nbsp;
-						已销售 <text class="info_num">12</text> 套
-					</view>
-				</view>
-				<uni-icon type="arrowright" size="30"></uni-icon>
-			</view> -->
 			<view class="tag_title_box">
 				<!-- <uni-tag text="出入库明细" type="default" :inverted="true" :circle="true"></uni-tag> -->
 				出入库明细
@@ -35,109 +22,25 @@
 			<template v-if="pickerIndex === 0">
 				<template v-if="TabCur === 0">
 					<!-- 销售的数据 -->
-					<view :class="['m-shadow_box detail_box']" v-for="(item,key) in saleData" :key="key">
-						<view class="m-flex-align detail_cont">
-							<view class="cont_box">
-								<view class="title">日期：<text class="cont">{{item.date[0]}}</text></view>
-								<view class="title">单价：<text class="cont">{{item.buyPrice}}</text></view>
-							</view>
-							<view class="cont_box">
-								<view class="title">类型：<text class="cont">销售</text></view>
-								<view class="title">数量：<text class="cont">x{{item.count}}</text></view>
-							</view>
-						</view>
-						<view class="foot_cont">
-							共1套，合计：¥<text class="price">{{item.price}}</text>
-						</view>
-					</view>
+					<inventory-msg v-for="(item,key) in saleData" :key="key" :info="item" @sendId="getId"></inventory-msg>
 					<!-- 购买信息数据 -->
 					<!-- 进货的数据 -->
-					<view :class="['m-shadow_box detail_box']" v-for="(item,key) in intoGoodsData" :key="'intoGoodsData'+key">
-						<view class="m-flex-align detail_cont">
-							<view class="cont_box">
-								<view class="title">日期：<text class="cont">{{item.orderTime[0]}}</text></view>
-								<view class="title">单价：<text class="cont">{{item.buyPrice}}</text></view>
-							</view>
-							<view class="cont_box">
-								<view class="title">类型：<text class="cont">进货</text></view>
-								<view class="title">数量：<text class="cont">x{{item.count}}</text></view>
-							</view>
-						</view>
-						<view class="foot_cont">
-							共1套，合计：¥<text class="price">{{item.totalMoney}}</text>
-						</view>
-					</view>
+					<inventory-msg v-for="(item,key) in intoGoodsData" :key="'buy_'+key" :type="1" :info="item"></inventory-msg>
 					<!-- 赠送的数据 -->
-					<view :class="['m-shadow_box detail_box']" v-for="(item,key) in giveData" :key="'giveData'+key">
-						<view class="m-flex-align detail_cont">
-							<view class="cont_box">
-								<view class="title">日期：<text class="cont">{{item.orderTime[0]}}</text></view>
-								<view class="title">单价：<text class="cont">{{item.buyPrice}}</text></view>
-							</view>
-							<view class="cont_box">
-								<view class="title">类型：<text class="cont">赠送</text></view>
-								<view class="title">数量：<text class="cont">x{{item.count}}</text></view>
-							</view>
-						</view>
-						<view class="foot_cont">
-							共1套，合计：¥<text class="price">{{item.totalMoney}}</text>
-						</view>
-					</view>
+					<inventory-msg v-for="(item,key) in giveData" :key="'give_'+key" :type="1" :info="item"></inventory-msg>
 					<view class="no_more_data">没有更多数据了~</view>
 				</template>
 				<template v-else-if="TabCur === 1">
-					<view :class="['m-shadow_box detail_box']" v-for="(item,key) in saleData" :key="key">
-						<view class="m-flex-align detail_cont">
-							<view class="cont_box">
-								<view class="title">日期：<text class="cont">{{item.date[0]}}</text></view>
-								<view class="title">单价：<text class="cont">{{item.buyPrice}}</text></view>
-							</view>
-							<view class="cont_box">
-								<view class="title">类型：<text class="cont">销售</text></view>
-								<view class="title">数量：<text class="cont">x{{item.count}}</text></view>
-							</view>
-						</view>
-						<view class="foot_cont">
-							共1套，合计：¥<text class="price">{{item.price}}</text>
-						</view>
-					</view>
+					<inventory-msg v-for="(item,key) in saleData" :key="key" :info="item" @sendId="getId"></inventory-msg>
 					<view class="no_more_data">没有更多数据了~</view>
 				</template>
 				<template v-else-if="TabCur === 2">
-					<view :class="['m-shadow_box detail_box']" v-for="(item,key) in intoGoodsData" :key="'intoGoodsData'+key">
-						<view class="m-flex-align detail_cont">
-							<view class="cont_box">
-								<view class="title">日期：<text class="cont">{{item.orderTime[0]}}</text></view>
-								<view class="title">单价：<text class="cont">{{item.buyPrice}}</text></view>
-							</view>
-							<view class="cont_box">
-								<view class="title">类型：<text class="cont">进货</text></view>
-								<view class="title">数量：<text class="cont">x{{item.count}}</text></view>
-							</view>
-						</view>
-						<view class="foot_cont">
-							共1套，合计：¥<text class="price">{{item.totalMoney}}</text>
-						</view>
-					</view>
+					<inventory-msg v-for="(item,key) in intoGoodsData" :key="'buy_'+key" :type="1" :info="item"></inventory-msg>
 					<view class="no_more_data">没有更多数据了~</view>
 				</template>
 				<template v-else>
 					<!-- 赠送的数据 -->
-					<view :class="['m-shadow_box detail_box']" v-for="(item,key) in giveData" :key="'giveData'+key">
-						<view class="m-flex-align detail_cont">
-							<view class="cont_box">
-								<view class="title">日期：<text class="cont">{{item.orderTime[0]}}</text></view>
-								<view class="title">单价：<text class="cont">{{item.buyPrice}}</text></view>
-							</view>
-							<view class="cont_box">
-								<view class="title">类型：<text class="cont">赠送</text></view>
-								<view class="title">数量：<text class="cont">x{{item.count}}</text></view>
-							</view>
-						</view>
-						<view class="foot_cont">
-							共1套，合计：¥<text class="price">{{item.totalMoney}}</text>
-						</view>
-					</view>
+					<inventory-msg v-for="(item,key) in giveData" :key="'give_'+key" :type="1" :info="item"></inventory-msg>
 					<view class="no_more_data">没有更多数据了~</view>
 				</template>
 			</template>
@@ -146,23 +49,44 @@
 				<view class="no_more_data">功能完善中...0.0~</view>
 			</template>
 		</scroll-view>
-		<mpvue-picker ref="mpvuePicker" :mode="mode" themeColor="#4C83D6" :deepLength="3" :pickerValueDefault="pickerValueDefault" @onConfirm="onConfirm"
-		 @onCancel="onCancel" :pickerValueArray="pickerValueArray"></mpvue-picker>
+		<mpvue-picker ref="mpvuePicker" :mode="mode" themeColor="#4C83D6" :deepLength="3" :pickerValueDefault="pickerValueDefault"
+		 @onConfirm="onConfirm" @onCancel="onCancel" :pickerValueArray="pickerValueArray"></mpvue-picker>
+		 <!-- 二维码弹出层 -->
+		<view class="post" v-show="tishi">
+			<view class="content" style="text-align: center;width: 580upx;margin: 0 auto;">
+				<view style="padding-top: 20upx;margin-top: 30upx;">
+					<view @click="guanbi">
+						<img id="test" style="width: 100%;height: 100%;"/>
+					</view>
+				</view>
+			</view>
+			<view style="color: #ffffff;font-size: 30upx;margin-top: 70upx;">长按保存图片至相册</view>
+			<!-- #ifdef APP-PLUS -->
+			<image @click="guanbi" class="cha" style="width: 80upx;height: 80upx; margin-top: 25upx;margin-left: 47%;"></image>
+			<!-- #endif -->
+			<!-- #ifdef H5 -->
+			<image @click="guanbi" class="cha" style="width: 80upx;height: 80upx; margin-top: 25upx; margin: 0;"></image>
+			<!-- #endif -->
+		</view>
 	</view>
 </template>
 
 <script>
 	import mySwiper from '@/components/jing-swiper/jing-swiper.vue';
 	import WucTab from '@/components/wuc-tab/wuc-tab.vue';
+	import inventoryMsg from '@/components/inventoryMsg.vue';
 	import mpvuePicker from 'mpvue-picker';
+	import canvas_x from '../../common/ewm/canvas_x.js';
 	export default {
 		components: {
 			WucTab,
 			mpvuePicker,
-			mySwiper
+			mySwiper,
+			inventoryMsg
 		},
 		data() {
 			return {
+				tishi: false,
 				// 经销商信息
 				dealerMsg: uni.getStorageSync('HdealerMsg'),
 				// 经销商ID
@@ -236,6 +160,53 @@
 			this.getStock()
 		},
 		methods: {
+			guanbi() {
+				this.tishi = false
+			},
+			getId(e) {
+				let url = encodeURIComponent('http://ds.jete.cn/h5/index.html#/pages/shopRegister/shopRegister?id=' + e);
+				let sentUrl = 'http://wx.aimeifa.com/Home/UULogin?shopID=' + this.$pubInfo.shopID + '&appID=' + this.$pubInfo
+					.appID + '&loginState=1&backUrl=' + url;
+				this.tishi = true;
+				canvas_x.makeImage({
+					type: 'url',
+					parts: [
+						{
+							type: 'image',
+							url: "../../static/bg.jpg",
+							width: 680,
+							height: 680,
+							// backgroundSize: 680,
+						},
+						{
+							type: 'qrcode',
+							text: sentUrl,
+							x: 0,
+							y: 0,
+							width: 680,
+							height: 680,
+							padding: 0,
+							background: '#fff',
+							level: 1
+						},
+						// {
+						// 	type: 'text',
+						// 	text: '玫瑰',
+						// 	textAlign: 'left',
+						// 	lineAlign: 'TOP',
+						// 	x: 440,
+						// 	y: 1115,
+						// 	color: 'black',
+						// 	size: '30px',
+						// 	// bold: true
+						// },
+					],
+					width: 680,
+					height: 680
+				}, (err, data) => {
+					document.getElementById('test').src = data
+				})
+			},
 			// 获取 mySwiper 切换下标
 			getSwiperKey(key) {
 				console.log(this.stockData[key]);
@@ -360,6 +331,7 @@
 								icon: 'success',
 								title: res.data.value
 							})
+							this.getStock()
 							uni.removeStorageSync('HBuyshopData')
 						} else {
 							uni.showToast({
@@ -479,5 +451,31 @@
 
 	.m-scroll {
 		height: calc(100vh - 490upx);
+	}
+
+	.post {
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.7);
+		position: fixed;
+		top: 0upx;
+		z-index: 10000;
+		text-align: center;
+
+// 		.wrapper {
+// 			height: 686upx;
+// 			width: 610upx;
+// 			margin: 0 auto;
+// 			margin-top: -150upx;
+// 
+// 			// margin-top: 50upx;
+// 		}
+	}
+
+	.cha {
+		background-image: url('../../static/img/chacha.png');
+		background-size: 80upx 80upx;
+		position: relative;
+		top: 40upx
 	}
 </style>

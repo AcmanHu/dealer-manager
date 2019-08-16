@@ -245,8 +245,6 @@
 		}
 	}
 
-
-
 	.content {
 		position: relative;
 	}

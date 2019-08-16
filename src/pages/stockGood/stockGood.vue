@@ -153,7 +153,7 @@
 						OriginalPrice: this.pickerValueArray[this.pickerIndex].price, // 原价
 						Count: this.numVal,
 						Remark: this.remark,
-						IsCheckOutForMonth: this.isChecked,
+						IsCheckOutForMonth: this.dealerMsg.isCheckOutForMonth,
 						DealerID: this.dealerMsg.dealerID,
 						PaymentBillID: ''
 					}
@@ -164,6 +164,7 @@
 						if (this.isChecked === 1) {
 							this.payRequest(Odata)
 						} else {
+							Odata.IsCheckOutForMonth = 0
 							uni.setStorageSync('HBuyshopData', Odata);
 							this.weChatPay()
 						}

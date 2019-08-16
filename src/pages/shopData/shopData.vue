@@ -148,7 +148,7 @@
 			.head_img_box {
 				height: 120upx;
 				width: 120upx;
-				border-radius: 50%;
+				// border-radius: 50%;
 				overflow: hidden;
 
 				image {
