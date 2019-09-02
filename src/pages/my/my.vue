@@ -1,11 +1,11 @@
 <template>
 	<view class="content">
 		<view class="head_box">
-			<view class="img_box">
+			<!-- <view class="img_box">
 				<image :src="userInfo.HeadImgurl" mode=""></image>
-			</view>
+			</view> -->
 			<!-- <view class="head_title">旺点5A官方指定代理商</view> -->
-			<view class="head_title">{{userInfo.NickName}}({{dealerMsg.dealerName}})</view>
+			<view class="head_title">{{dealerMsg.contacts}}({{dealerMsg.dealerName}})</view>
 		</view>
 		<view class="m-container">
 			<view class="m-shadow_box sale_box">

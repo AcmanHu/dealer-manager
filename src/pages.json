@@ -4,7 +4,7 @@
 			"path": "pages/index/index",
 			"style": {
 				"navigationStyle": "custom",
-				"navigationBarTitleText": "销售管理系统-首页"
+				"navigationBarTitleText": "渠道商管理系统"
 			}
 		}, {
 			"path": "pages/register/register",
@@ -95,6 +95,12 @@
 			"style": {
 				"navigationStyle": "custom",
 				"navigationBarTitleText": "分享二维码"
+			}
+		}, {
+			"path": "pages/myInventory/myInventory",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "库存管理"
 			}
 		}
 	],

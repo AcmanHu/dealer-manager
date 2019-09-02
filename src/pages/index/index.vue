@@ -21,14 +21,13 @@
 			</swiper>
 		</view>
 		<view class="m-container">
-			<view class="tag_title" v-if="isReg">尊敬的<text class="m-color-red">{{dealerMsg.dealerLevelName}}官方指定代理商</text>，你属{{dealerMsg.dealerLevelName}}代理商</view>
+			<view class="tag_title" v-if="isReg">尊敬的<text class="m-color-red">{{dealerMsg.contacts}}</text>，你属于{{dealerMsg.dealerLevelName}}级代理商</view>
 			<view class="tag_title" v-else>你还不是杰特科技销售管理系统的用户，<text class="m-color-goto" @click="toRegister">立即注册</text></view>
 			<uni-grid :options="[
 			{image:'../../static/homeIcon/jhgl.png',text:'进货'},
 			{image:'../../static/homeIcon/xsgl.png',text:'销售'},
 			{image:'../../static/homeIcon/kcgl.png',text:'库存管理'},
 			{image:'../../static/homeIcon/sj.png',text:'店铺数据'},
-			{image:'../../static/homeIcon/tjfx.png',text:'统计分析'},
 			{image:'../../static/homeIcon/my.png',text:'我的'}]"
 			 :show-out-border="false" :show-border="true" @click="toOtherPage">
 			</uni-grid>
@@ -115,7 +114,7 @@
 						break;
 					case 2:
 						uni.navigateTo({
-							url: '../inventory/inventory'
+							url: '../myInventory/myInventory'
 						});
 						break;
 					case 3:
@@ -123,12 +122,12 @@
 							url: '../shopData/shopData'
 						});
 						break;
+					// case 4:
+					// 	uni.navigateTo({
+					// 		url: '../plan/plan'
+					// 	});
+					// 	break;
 					case 4:
-						uni.navigateTo({
-							url: '../plan/plan'
-						});
-						break;
-					case 5:
 						uni.navigateTo({
 							url: '../my/my'
 						});

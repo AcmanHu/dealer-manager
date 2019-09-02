@@ -13,11 +13,10 @@
 		</view>
 
 		<view class="m-container m-flex-align tab_box">
-			<view class="m-align-justify-c select_ways" @click="showPicker">
+		<!-- 	<view class="m-align-justify-c select_ways" @click="showPicker">
 				<text>{{selectWay===""?"按时间":selectWay}}</text>
-				<!-- <uni-icon type="arrowdown" size="20"></uni-icon> -->
 				<text class="m-icon">&#xe601;</text>
-			</view>
+			</view> -->
 			<wuc-tab :tab-list="tabList[pickerIndex]" :tabCur="TabCur" textFlex @change="tabChange" class="wuc_tab"></wuc-tab>
 		</view>
 		<scroll-view scroll-y="true" class="m-scroll">

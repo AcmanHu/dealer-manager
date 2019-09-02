@@ -74,7 +74,7 @@
         "usingComponents" : true
     },
     "h5" : {
-        "title" : "经销商",
+        "title" : "渠道商管理系统",
         "domain" : "",
         "router" : {
             "base" : "/h5/"

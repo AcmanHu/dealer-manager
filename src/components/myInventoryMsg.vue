@@ -1,11 +1,11 @@
 <template>
 	<view class="">
-		<template v-if="oType === 0">
-			<view :class="['m-shadow_box detail_box',{no_pay:infoDetail.patState===2}]">
+		<template v-if="infoDetail.status === 1">
+			<view :class="['m-shadow_box detail_box',{no_pay:infoDetail.paySate===2}]">
 				<view class="m-flex-align detail_cont">
 					<view class="cont_box">
 						<view class="title">日期：<text class="cont">{{infoDetail.date[0]}}</text></view>
-						<view class="title">单价：<text class="cont">{{infoDetail.buyPrice}}</text></view>
+						<view class="title">单价：<text class="cont">{{infoDetail.price}}</text></view>
 					</view>
 					<view class="cont_box">
 						<view class="title">类型：<text class="cont">销售</text></view>
@@ -13,19 +13,19 @@
 					</view>
 				</view>
 				<view class="foot_cont m-flex-space-b">
-					<text class="foot_toewm" v-if="infoDetail.patState === 2" @click="toEWM">去支付</text>
-					<view class="foot_total">
-						共: {{infoDetail.count}}套，小计：<text class="price">{{infoDetail.price}}</text>
+					<text class="foot_toewm" v-if="infoDetail.paySate === 2" @click="toEWM">去支付</text>
+					<view :class="[{'foot_total': infoDetail.paySate !== 2}]">
+						共: {{infoDetail.count}}套，小计：<text class="price">{{infoDetail.totalPrice}}</text>
 					</view>
 				</view>
 			</view>
 		</template>
-		<template v-else-if="oType === 1">
+		<template v-else-if="infoDetail.status === 2">
 			<view :class="['m-shadow_box detail_box']">
 				<view class="m-flex-align detail_cont">
 					<view class="cont_box">
-						<view class="title">日期：<text class="cont">{{infoDetail.orderTime[0]}}</text></view>
-						<view class="title">单价：<text class="cont">{{infoDetail.buyPrice}}</text></view>
+						<view class="title">日期：<text class="cont">{{infoDetail.date[0]}}</text></view>
+						<view class="title">单价：<text class="cont">{{infoDetail.price}}</text></view>
 					</view>
 					<view class="cont_box">
 						<template v-if="infoDetail.payModel === 4">
@@ -38,7 +38,7 @@
 					</view>
 				</view>
 				<view class="foot_cont">
-					共: {{infoDetail.count}}套，小计：<text class="price">{{infoDetail.totalMoney}}</text>
+					共: {{infoDetail.count}}套，小计：<text class="price">{{infoDetail.totalPrice}}</text>
 				</view>
 			</view>
 		</template>
@@ -126,6 +126,11 @@
 				color: #00b80c;
 				padding: 4upx 10upx;
 				border-radius: 4upx;
+			}
+
+			.foot_total {
+				width: 100%;
+				text-align: right;
 			}
 
 			.price {

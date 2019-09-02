@@ -11,13 +11,13 @@
 					</view>
 				</view>
 				<!-- 价格 -->
-				<view class="input-item">
+				<view class="input-item" v-if="current !== 2">
 					<view class="input-label">价格</view>
 					<view class="input-body">
 						<!-- <input v-model="price" type="text" style="margin-right: 160upx;" placeholder="请输入联系人" class="input"> -->
 						<!-- <text class="input m_placeholder">{{price===""?'':'￥'+price}}</text> -->
 						<!-- <pb-input v-model="price" type="number" placeholder=""></pb-input> -->
-						<pb-input v-model="price" type="number" placeholder=""  @setInput="getChangeInput($event,'price')"></pb-input>
+						<pb-input v-model="price" type="number" placeholder="" @setInput="getChangeInput($event,'price')"></pb-input>
 					</view>
 				</view>
 			</view>
@@ -119,7 +119,9 @@
 			</view>
 		</scroll-view>
 		<view class="m_footer">
-			<button class="button" @click="createEWM">生成二维码转发</button>
+
+			<button class="button" @click="createEWM" v-if="toWays === 0">生成二维码转发</button>
+			<button class="button" @click="createEWM" v-else>立即注册</button>
 		</view>
 		<mpvue-picker ref="mpvuePicker" :mode="mode" :deepLength="3" themeColor="#4C83D6" :pickerValueDefault="pickerValueDefault"
 		 @onChange="onConfirm" @onConfirm="onConfirm" :pickerValueArray="pickerValueArray"></mpvue-picker>
@@ -155,7 +157,7 @@
 				// ---------------------
 				lookMore: {
 					status: true,
-					value: '查看更多'
+					value: '立即编辑'
 				},
 				// ---------picker数据------------
 				mode: 'selector',
@@ -176,6 +178,13 @@
 						name: '先试用'
 					}
 				],
+				// -----------------------------------------------
+				// 生成二维码还是立即注册
+				toWays: 0,
+				// 特殊的id
+				specialId: "",
+				detailData: "",
+				// -----------------------------------------------
 				// 
 				passFocus: false,
 				// 默认选中
@@ -243,7 +252,7 @@
 					this.lookMore.value = '收起'
 					this.lookMore.status = false
 				} else {
-					this.lookMore.value = '查看更多'
+					this.lookMore.value = '立即编辑'
 					this.lookMore.status = true
 				}
 			},
@@ -311,6 +320,15 @@
 						this.current = i;
 						break;
 					}
+				}
+				if (this.current === 1 || this.current === 2) {
+					this.lookMore.status = false
+					this.lookMore.value = '收起'
+					this.showQrcode = false
+					this.toWays = 1
+				} else {
+					// this.lookMore.status = true
+					this.toWays = 0
 				}
 			},
 			// -------二维码-------
@@ -411,19 +429,123 @@
 				 * this.current = 1 表示选择线下支付
 				 * this.current = 2 表示选先试用
 				 */
-				this.requestData(data, (res) => {
-					console.log("id是", res)
-					let url = encodeURIComponent('http://ds.jete.cn/h5/index.html#/pages/shopRegister/shopRegister?id=' + res)
-					// let sentUrl = 'http://wx.aimeifa.com/Home/UULogin?burl=' + url
-					let sentUrl = 'http://wx.aimeifa.com/Home/UULogin?shopID=' + this.$pubInfo.shopID + '&appID=' + this.$pubInfo
-						.appID + '&loginState=1&backUrl=' + url
-					console.log(sentUrl)
-					this.$set(this.qrcode, 'val', sentUrl)
-					setTimeout(() => {
-						this.$refs.qrcode._makeCode()
-					}, 1000)
-					this.showQrcode = true
-				})
+				if (this.current === 0) {
+					this.requestData(data, (res) => {
+						console.log("id是", res)
+						let url = encodeURIComponent('http://ds.jete.cn/h5/index.html#/pages/shopRegister/shopRegister?id=' + res)
+						// let sentUrl = 'http://wx.aimeifa.com/Home/UULogin?burl=' + url
+						let sentUrl = 'http://wx.aimeifa.com/Home/UULogin?shopID=' + this.$pubInfo.shopID + '&appID=' + this.$pubInfo
+							.appID + '&loginState=1&backUrl=' + url
+						this.$set(this.qrcode, 'val', sentUrl)
+						setTimeout(() => {
+							this.$refs.qrcode._makeCode()
+						}, 1000)
+						this.showQrcode = true
+					})
+				} else {
+					this.requestData(data, (res) => {
+						this.getMsg(res)
+					})
+				}
+
+			},
+			// 获取信息
+			getMsg(specialId) {
+				uni.showLoading({
+					title: '加载中'
+				});
+				this.$request
+					.post("WeChatSubscription/Distributor/GetSaleOrg", {
+						data: {
+							id: specialId
+						},
+						header: {
+							'content-type': 'application/x-www-form-urlencoded'
+						},
+					})
+					.then(res => {
+						console.log(res);
+						if (res.data.value.length === 0) {
+							uni.showToast({
+								icon: 'none',
+								title: '注册失败'
+							});
+						} else {
+							let msg = res.data.value[0].os;
+							if (msg) {
+								this.detailData = res.data.value[0]
+								let data = this.detailData.os
+								data.id = this.detailData.id
+								data.dealerID = this.detailData.dealerID
+								data.productID = this.detailData.productID
+								data.payBillID = ""
+								data.wxOpenID = ""
+								this.reqRegister(data)
+							}
+							// uni.hideLoading();
+						}
+					})
+					.catch(error => {
+						uni.hideLoading();
+						this.$Toast.Model();
+						console.error('error:', error);
+					});
+			},
+			// 购买店铺的接口
+			reqRegister(data) {
+				// uni.showLoading({
+				// 	title: '加载中'
+				// });
+				this.$request
+					.post("WeChatSubscription/Distributor/BuyOrg", {
+						data: data
+					})
+					.then(res => {
+						console.log(res);
+						uni.hideLoading();
+						if (res.data.statusCode === 0) {
+							uni.showToast({
+								icon: 'none',
+								title: res.data.value
+							})
+						} else if (res.data.statusCode === 1) {
+							let oData = res.data.value
+							let formData = {
+								reg: oData.reg,
+								userName: oData.orgLoginName,
+								password: oData.orgPassword
+							}
+							if (this.current === 2) {
+								uni.showToast({
+									icon: 'success',
+									title: '恭喜你，试用注册成功，试用有效期为3天。'
+								})
+								uni.navigateTo({
+									url: `../registerSuccess/registerSuccess?userdata=${JSON.stringify(formData)}&spetype=1`
+								});
+							} else {
+								uni.showToast({
+									icon: 'success',
+									title: '恭喜你，注册成功。'
+								})
+								uni.navigateTo({
+									url: '../registerSuccess/registerSuccess?userdata=' + JSON.stringify(formData)
+								});
+							}
+
+						} else {
+							uni.showToast({
+								icon: 'none',
+								title: res.data.value
+							})
+						}
+
+					})
+					.catch(error => {
+						uni.hideLoading();
+						this.$Toast.Model();
+						console.error('error:', error);
+					});
 			},
 			// 调用经销商销售生成订单接口
 			async requestData(data, callback) {
@@ -435,14 +557,14 @@
 					let res = await this.$request.post('WeChatSubscription/Distributor/SaleOrg', {
 						data: data
 					});
-					console.log(res);
-					// uni.hideLoading();
+					console.log(">>>", res);
 					if (res.data.statusCode === 0) {
 						uni.showToast({
 							icon: 'none',
 							title: res.data.value
 						})
 					} else if (res.data.statusCode === 1) {
+						// uni.hideLoading();
 						callback(res.data.value)
 					} else {
 						uni.showToast({

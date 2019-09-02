@@ -7,7 +7,7 @@
 			</view>
 			<!-- 主体 -->
 			<view class="main">
-				<wInput v-model="name" type="text" placeholder="渠道名称"></wInput>
+				<wInput v-model="name" type="text" placeholder="渠道商名称"></wInput>
 				<wInput v-model="contact" type="text" placeholder="联系人"></wInput>
 				<wInput v-model="phone" type="number" maxlength="11" placeholder="手机号"></wInput>
 				<!-- 		<wInput v-model="passData" type="password" maxlength="11" placeholder="登录密码" isShowPass></wInput> -->

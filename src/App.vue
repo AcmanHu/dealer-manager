@@ -2,6 +2,7 @@
 	export default {
 		onLaunch: function() {
 			console.log('App Launch')
+			// this.userAgentWx()
 		},
 		onShow: function() {
 			console.log('App Show')
@@ -9,7 +10,19 @@
 		onHide: function() {
 			console.log('App Hide')
 		},
-		methods: {}
+		methods: {
+			userAgentWx() {
+				var useragent = navigator.userAgent;
+				if (useragent.match(/MicroMessenger/i) != 'MicroMessenger') {
+					// 这里警告框会阻塞当前页面继续加载
+					alert('请在微信客户端访问本页面');
+					// 以下代码是用javascript强行关闭当前页面
+					var opened = window.open('about:blank', '_self');
+					opened.opener = null;
+					opened.close();
+				}
+			}
+		}
 	}
 </script>
 

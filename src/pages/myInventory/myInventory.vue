@@ -1,53 +1,47 @@
 <template>
 	<view class="content">
 		<view class="m-container">
+			<!--  -->
 			<template v-if="stockData.length!==0">
 				<mySwiper :listData="stockData" @changeIndex="getSwiperKey"></mySwiper>
+				<!-- <mSwiper :listData="stockData" @changeIndex="getSwiperKey1"></mSwiper> -->
 			</template>
-			<!-- <view class="tag_title_box">
-				出入库明细
-			</view> -->
+			<!--  -->
 			<view class="m-flex-align tab_box">
-				<view class="m-align-justify-c select_ways" @click="showPicker">
+				<!-- <view class="m-align-justify-c select_ways" @click="showPicker">
 					<text>{{selectWay===""?"按类型":selectWay}}</text>
-					<!-- <uni-icon type="arrowdown" size="20"></uni-icon> -->
 					<text class="m-icon">&#xe601;</text>
-				</view>
+				</view> -->
+				<wuc-tab :tab-list="timeTabList" :tabCur.sync="TimeTabCur" textFlex @change="TimeTabChange" class="wuc_tab"></wuc-tab>
+			</view>
+			<!--  -->
+			<view class="m-flex-align tab_box">
+				<!-- <view class="m-align-justify-c select_ways" @click="showPicker">
+					<text>{{selectWay===""?"按类型":selectWay}}</text>
+					<text class="m-icon">&#xe601;</text>
+				</view> -->
 				<wuc-tab :tab-list="tabList[pickerIndex]" :tabCur.sync="TabCur" textFlex @change="tabChange" class="wuc_tab"></wuc-tab>
 			</view>
 		</view>
+		<!--  -->
 		<scroll-view scroll-y="true" class="m-scroll">
-			<!-- 按类型查找 -->
-			<template v-if="pickerIndex === 0">
-				<template v-if="TabCur === 0">
-					<!-- 销售的数据 -->
-					<inventory-msg v-for="(item,key) in saleData" :key="key" :info="item" @sendId="getId"></inventory-msg>
-					<!-- 购买信息数据 -->
-					<!-- 进货的数据 -->
-					<inventory-msg v-for="(item,key) in intoGoodsData" :key="'buy_'+key" :type="1" :info="item"></inventory-msg>
-					<!-- 赠送的数据 -->
-					<inventory-msg v-for="(item,key) in giveData" :key="'give_'+key" :type="1" :info="item"></inventory-msg>
-					<view class="no_more_data">没有更多数据了~</view>
-				</template>
-				<template v-else-if="TabCur === 1">
-					<inventory-msg v-for="(item,key) in saleData" :key="key" :info="item" @sendId="getId"></inventory-msg>
-					<view class="no_more_data">没有更多数据了~</view>
-				</template>
-				<template v-else-if="TabCur === 2">
-					<inventory-msg v-for="(item,key) in intoGoodsData" :key="'buy_'+key" :type="1" :info="item"></inventory-msg>
-					<view class="no_more_data">没有更多数据了~</view>
-				</template>
-				<template v-else>
-					<!-- 赠送的数据 -->
-					<inventory-msg v-for="(item,key) in giveData" :key="'give_'+key" :type="1" :info="item"></inventory-msg>
-					<view class="no_more_data">没有更多数据了~</view>
-				</template>
-			</template>
-			<!-- 按时间查找 -->
-			<template v-else>
-				<view class="no_more_data">功能完善中...0.0~</view>
-			</template>
+			<myInventoryMsg v-for="(item,key) in curShowData" :key="key" :info="item" @sendId="getId"></myInventoryMsg>
+			<view class="no_more_data">没有更多数据了~</view>
 		</scroll-view>
+		<view class="bottom_box">
+			<view class="bot_info">
+				进货：<text>{{jinhuo}}</text>
+			</view>
+			<view class="bot_info">
+				赠送：<text>{{zengsong}}</text>
+			</view>
+			<view class="bot_info">
+				销售：<text>{{xiaoshou}}</text>
+			</view>
+			<view class="bot_info">
+				库存：<text>{{kucun}}</text>
+			</view>
+		</view>
 		<mpvue-picker ref="mpvuePicker" :mode="mode" themeColor="#4C83D6" :deepLength="3" :pickerValueDefault="pickerValueDefault"
 		 @onConfirm="onConfirm" @onCancel="onCancel" :pickerValueArray="pickerValueArray"></mpvue-picker>
 		<!-- 二维码弹出层 -->
@@ -67,13 +61,18 @@
 			<image @click="guanbi" class="cha" style="width: 80upx;height: 80upx; margin-top: 25upx; margin: 0;"></image>
 			<!-- #endif -->
 		</view>
+		<!-- 自定义时间选择 -->
+		<rangeDatePick :show="isDateShow" @showchange="showDatechange" start="2019-01-01" end="2200-12-01" :value="value"
+		 @change="bindChange" @cancel="bindCancel" themeColor="#4C83D6" fields="day"></rangeDatePick>
 	</view>
 </template>
 
 <script>
 	import mySwiper from '@/components/jing-swiper/jing-swiper.vue';
+	import mSwiper from '@/components/m-swiper.vue';
+	import rangeDatePick from '@/components/range-dtpicker/range-dtpicker.vue';
 	import WucTab from '@/components/wuc-tab/wuc-tab.vue';
-	import inventoryMsg from '@/components/inventoryMsg.vue';
+	import myInventoryMsg from '@/components/myInventoryMsg.vue';
 	import mpvuePicker from 'mpvue-picker';
 	import canvas_x from '../../common/ewm/canvas_x.js';
 	export default {
@@ -81,7 +80,9 @@
 			WucTab,
 			mpvuePicker,
 			mySwiper,
-			inventoryMsg
+			mSwiper,
+			rangeDatePick,
+			myInventoryMsg
 		},
 		data() {
 			return {
@@ -92,20 +93,33 @@
 				dealerId: '',
 				// mySwiper 切换下标
 				mySwiperKey: 0,
-				// 当前选择产品的数据
-				curProductData: [],
 				// tab当前选择
 				TabCur: 0,
+				TimeTabCur: 1,
+				// 自定义时间数据
+				curOwnTimeData: [],
+				// 当前时间的数据
+				curTimeData: [],
+				// 当前选择产品的数据
+				curProductData: [],
+				// 需要展示的数据
+				curShowData: [],
 				// 所有数据
 				allStockData: [],
-				// 库存管理的所有数据
-				stockData: [],
-				// tab分类：销售数据集合
-				saleData: [],
-				// tab分类：赠送数据集合
-				giveData: [],
-				// tab分类：进货数据集合
-				intoGoodsData: [],
+				// 时间汇总，上月 当月 最近上个月
+				timeTotal: [],
+				// ------------自定义时间区块
+				isDateShow: false,
+				jinhuo: 0,
+				// 进货数据
+				zengsong: 0,
+				// 赠送数据
+				xiaoshou: 0,
+				// 销售数据
+				kucun: 0,
+				// 库存数据
+
+				value: [],
 				// tab分类数据
 				tabList: [
 					[{
@@ -127,6 +141,7 @@
 						name: '今年'
 					}]
 				],
+				timeTabList: [],
 				selectWay: "",
 				pickerIndex: 0,
 				// ---------picker数据------------
@@ -158,7 +173,32 @@
 			}
 		},
 		onShow() {
+			this.getMonth()
 			this.getStock()
+		},
+		watch: {
+			curTimeData: {
+				handler(n, o) {
+					let j = 0,
+						z = 0,
+						x = 0;
+					for (let item of n) {
+						if (item.status === 1) {
+							x = x + item.count
+						} else {
+							if (item.payModel === 4) {
+								z = z + item.count
+							} else {
+								j = j + item.count
+							}
+						}
+					}
+					this.jinhuo = j
+					this.zengsong = z
+					this.xiaoshou = x
+				},
+				// immediate: true	
+			}
 		},
 		methods: {
 			guanbi() {
@@ -189,17 +229,6 @@
 							background: '#fff',
 							level: 1
 						},
-						// {
-						// 	type: 'text',
-						// 	text: '玫瑰',
-						// 	textAlign: 'left',
-						// 	lineAlign: 'TOP',
-						// 	x: 440,
-						// 	y: 1115,
-						// 	color: 'black',
-						// 	size: '30px',
-						// 	// bold: true
-						// },
 					],
 					width: 680,
 					height: 680
@@ -207,27 +236,174 @@
 					document.getElementById('test').src = data
 				})
 			},
+			// 获取月份
+			getMonth() {
+				let oDate = new Date()
+				let curMonth = oDate.getMonth() + 1
+				let lastMonth = curMonth - 1
+				if (lastMonth === 0) {
+					lastMonth = 12
+				}
+				let llastMonth = lastMonth - 1
+				if (lastMonth === 0) {
+					llastMonth = 12
+				}
+				this.timeTotal = [llastMonth, lastMonth, curMonth]
+				this.timeTabList = [{
+						name: lastMonth + '月'
+					},
+					{
+						name: curMonth + '月'
+					},
+					{
+						name: llastMonth + '-' + curMonth + '月'
+					}, {
+						name: '自定义'
+					}
+				]
+			},
+			getSwiperKey1(key) {
+				console.log(key);
+			},
 			// 获取 mySwiper 切换下标
 			getSwiperKey(key) {
 				console.log(this.stockData[key]);
-				// this.mySwiperKey = key
 				this.TabCur = 0
+				this.TimeTabCur = 1
 				this.curProductData = []
-				this.giveData = []
-				this.intoGoodsData = []
-				this.curProductData = this.stockData[key]
-				this.saleData = this.curProductData.orgSales
-				for (let item of this.curProductData.buyProductRecords) {
-					// 支付方式1现金2微信3支付宝4赠送5月结
-					if (item.payModel === 4) {
-						this.giveData.push(item)
-					} else {
-						this.intoGoodsData.push(item)
+				this.allStockData = []
+				this.pubDealData(this.stockData[key])
+			},
+			pubDealData(data) {
+				this.kucun = data.surplusCount
+				this.curProductData = []
+				for (let item of data.orgSales) {
+					let obj = {}
+					// 销售的
+					obj.status = 1
+					obj.id = item.id
+					obj.paySate = item.patState
+					obj.date = item.date
+					obj.price = item.buyPrice
+					obj.count = item.count
+					obj.totalPrice = item.price
+					this.allStockData.push(obj)
+				}
+				for (let item of data.buyProductRecords) {
+					// 进货的
+					let obj = {}
+					obj.status = 2
+					obj.payModel = item.payModel
+					obj.date = item.orderTime
+					obj.price = item.buyPrice
+					obj.count = item.count
+					obj.totalPrice = item.totalMoney
+					this.allStockData.push(obj)
+				}
+				for (let item of this.allStockData) {
+					let curDate = new Date()
+					let curY = curDate.getFullYear()
+					let curM = curDate.getMonth() + 1
+					let [Y, M, D] = item.date[0].split('-')
+					if (curY == Y && curM == M) {
+						this.curProductData.push(item)
 					}
+				}
+				this.curTimeData = this.curProductData
+				this.curShowData = this.curProductData
+			},
+			TimeTabChange(index) {
+				this.TimeTabCur = index;
+				let curDate = new Date()
+				let curY = curDate.getFullYear()
+				let curM = curDate.getMonth() + 1
+				switch (index) {
+					case 0:
+						this.curTimeData = this.allStockData.filter(item => {
+							let [Y, M] = item.date[0].split('-')
+							return Y == curY && M == curM - 1
+						})
+						this.tabChange(this.TabCur)
+						break;
+					case 1:
+						this.curTimeData = this.curProductData
+						this.tabChange(this.TabCur)
+						break;
+					case 2:
+						let [LL, L, C] = this.timeTotal
+						this.curTimeData = this.allStockData.filter(item => {
+							let [Y, M] = item.date[0].split('-')
+							return LL <= M
+						})
+						this.tabChange(this.TabCur)
+						break;
+					case 3:
+						this.isDateShow = true
+						break;
+					default:
+						break;
 				}
 			},
 			tabChange(index) {
 				this.TabCur = index;
+				switch (index) {
+					case 0:
+						if (this.TimeTabCur !== 3) {
+							this.curShowData = this.curTimeData
+						} else {
+							this.curShowData = this.curOwnTimeData
+						}
+						break;
+					case 1:
+						if (this.TimeTabCur !== 3) {
+							this.curShowData = this.curTimeData.filter(item => {
+								return item.status === 1
+							})
+						} else {
+							this.curShowData = this.curOwnTimeData.filter(item => {
+								return item.status === 1
+							})
+						}
+						break;
+					case 2:
+						if (this.TimeTabCur !== 3) {
+							this.curShowData = this.curTimeData.filter(item => {
+								return item.status === 2 && item.payModel !== 4
+							})
+						} else {
+							this.curShowData = this.curOwnTimeData.filter(item => {
+								return item.status === 2 && item.payModel !== 4
+							})
+						}
+						break;
+					case 3:
+						if (this.TimeTabCur !== 3) {
+							this.curShowData = this.curTimeData.filter(item => {
+								return item.status === 2 && item.payModel === 4
+							})
+						} else {
+							this.curShowData = this.curOwnTimeData.filter(item => {
+								return item.status === 2 && item.payModel === 4
+							})
+						}
+						break;
+					default:
+						break;
+				}
+			},
+			// -----------时间选择器事件-------------
+			showDatechange() {
+				this.isDateShow = !this.isDateShow;
+			},
+			bindChange(data) {
+				let [a, b] = data
+				this.curOwnTimeData = this.allStockData.filter(item => {
+					return new Date(a) < new Date(item.date[0]) && new Date(item.date[0]) < new Date(b)
+				})
+				this.tabChange(this.TabCur)
+			},
+			bindCancel(e) {
+				console.log(e)
 			},
 			// picker列表弹窗
 			showPicker() {
@@ -245,20 +421,8 @@
 			},
 			// 获取库存管理的数据
 			getStock() {
-				// let oDealerID;
-				// if (this.dealerId !== '') {
-				// 	oDealerID = this.dealerId
-				// } else {
-				// 	oDealerID = this.dealerMsg.dealerID
-				// }
-				// if (oDealerID === null || oDealerID === undefined || oDealerID === '') {
-				// 	return;
-				// }
 				this.stockData = []
-				this.curProductData = []
-				this.saleData = []
-				this.giveData = []
-				this.intoGoodsData = []
+				this.allStockData = []
 				uni.showLoading({
 					title: '加载中'
 				});
@@ -287,20 +451,8 @@
 								}
 								this.stockData.unshift(item)
 							}
-							console.log(this.stockData);
-							// this.stockData = oData.dealerProducts
-							this.curProductData = this.stockData[0]
-							this.allStockData = this.allStockData.concat(this.curProductData.orgSales, this.curProductData.buyProductRecords)
-							console.log(this.allStockData);
-							this.saleData = this.curProductData.orgSales
-							for (let item of this.curProductData.buyProductRecords) {
-								// 支付方式1现金2微信3支付宝4赠送5月结
-								if (item.payModel === 4) {
-									this.giveData.push(item)
-								} else {
-									this.intoGoodsData.push(item)
-								}
-							}
+							let oneData = this.stockData[0]
+							this.pubDealData(oneData)
 						}
 						uni.hideLoading();
 					})
@@ -312,7 +464,6 @@
 			},
 			// 调用购买产品的接口
 			payRequest(data) {
-				console.log(data)
 				uni.showLoading({
 					title: '加载中'
 				});
@@ -452,7 +603,20 @@
 	}
 
 	.m-scroll {
-		height: calc(100vh - 286upx);
+		height: calc(100vh - 460upx);
+	}
+
+	.bottom_box {
+		position: fixed;
+		width: 100%;
+		bottom: 0;
+		height: 80upx;
+		background: #fff;
+		box-shadow: 2px 2px 6px #ccc;
+		display: flex;
+		align-items: center;
+		justify-content: space-around;
+		font-size: 28upx;
 	}
 
 	.post {

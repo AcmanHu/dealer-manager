@@ -25,7 +25,7 @@
 							</view>
 						</view>
 						<view class="foot_cont">
-							共1套，合计：¥<text class="price">{{item.count * item.salePrice}}</text>.00
+							共1套，合计：¥<text class="price">{{item.count * item.salePrice}}</text>
 						</view>
 					</view>
 					<view class="no_more_data">没有更多数据了~</view>
@@ -44,7 +44,7 @@
 							</view>
 						</view>
 						<view class="foot_cont">
-							共1套，合计：¥<text class="price">{{item.count * item.salePrice}}</text>.00
+							共1套，合计：¥<text class="price">{{item.count * item.salePrice}}</text>
 						</view>
 					</view>
 					<view class="no_more_data">没有更多数据了~</view>

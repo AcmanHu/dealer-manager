@@ -2,7 +2,8 @@
 	<view class="m-container">
 		<view class="success_box">
 			<text class="m-icon succ_icon">&#xe68d;</text>
-			<view class="title">恭喜您，注册成功！</view>
+			<view class="title titleTip" v-if="speType == 1">恭喜您，试用注册成功，试用有效期为3天。</view>
+			<view class="title titleTip" v-else>恭喜您，注册成功！</view>
 		</view>
 		<view class="user_box">
 			<view class="title"><text class="title_name">注册号</text><text class="num">{{reg}}</text></view>
@@ -23,7 +24,8 @@
 			return {
 				reg: '',
 				userName: "",
-				password: ""
+				password: "",
+				speType: 0
 			};
 		},
 		onLoad(option) {
@@ -34,7 +36,10 @@
 				oData.payBillID = option.orderID
 				this.reqRegister(oData)
 			} else {
+				console.log(option)
 				let oUser = JSON.parse(option.userdata)
+				this.speType = option.spetype
+				console.log(this.speType);
 				this.reg = oUser.reg
 				this.userName = oUser.userName
 				this.password = oUser.password
@@ -91,6 +96,10 @@
 		color: #d81e06;
 		padding: 60upx 0;
 		border-bottom: 1px solid #e4e4e4;
+
+		.titleTip {
+			font-size: 32upx;
+		}
 
 		.succ_icon {
 			font-size: 120upx;
